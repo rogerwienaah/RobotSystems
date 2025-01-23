@@ -22,7 +22,7 @@ import time
 logging_format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO,
 datefmt="%H:%M:%S")
-# logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.DEBUG)
 # logging.debug(message)
 
 
@@ -135,9 +135,8 @@ class Picarx(object):
         speed = abs(speed)
         # print(f"direction: {direction}, speed: {speed}")
         if speed != 0:
-            # speed = int(speed /2 ) + 50
-            speed = int(speed /2)
-        speed = speed - self.cali_speed_value[motor]
+            # speed = int(speed /2 ) + 50 # removed speed scaling
+            speed = speed - self.cali_speed_value[motor]
         if direction < 0:
             self.motor_direction_pins[motor].high()
             self.motor_speed_pins[motor].pulse_width_percent(speed)
@@ -202,38 +201,50 @@ class Picarx(object):
         self.set_motor_speed(2, speed)
 
     def backward(self, speed):
+        logging.debug("Moving backward")
         current_angle = self.dir_current_angle
         if current_angle != 0:
+            ackermann_scale = self.ackermann_steering_angle(current_angle)
             abs_current_angle = abs(current_angle)
             if abs_current_angle > self.DIR_MAX:
                 abs_current_angle = self.DIR_MAX
-            power_scale = (100 - abs_current_angle) / 100.0 
+            # power_scale = (100 - abs_current_angle) / 100.0 
+
+
             if (current_angle / abs_current_angle) > 0:
                 self.set_motor_speed(1, -1*speed)
-                self.set_motor_speed(2, speed * power_scale)
+                self.set_motor_speed(2, speed * ackermann_scale[1])
             else:
-                self.set_motor_speed(1, -1*speed * power_scale)
+                self.set_motor_speed(1, -1*speed * ackermann_scale[0])
                 self.set_motor_speed(2, speed )
         else:
             self.set_motor_speed(1, -1*speed)
-            self.set_motor_speed(2, speed)  
+            self.set_motor_speed(2, speed) 
+
+        logging.debug("Done Moving forward")  
 
     def forward(self, speed):
+        logging.debug("Moving forward")
         current_angle = self.dir_current_angle
         if current_angle != 0:
+            ackermann_scale = self.ackermann_steering_angle(current_angle)
             abs_current_angle = abs(current_angle)
             if abs_current_angle > self.DIR_MAX:
                 abs_current_angle = self.DIR_MAX
-            power_scale = (100 - abs_current_angle) / 100.0
+            # power_scale = (100 - abs_current_angle) / 100.0
+            
+
             if (current_angle / abs_current_angle) > 0:
-                self.set_motor_speed(1, 1*speed * power_scale)
+                self.set_motor_speed(1, 1*speed * ackermann_scale[0])
                 self.set_motor_speed(2, -speed) 
             else:
                 self.set_motor_speed(1, speed)
-                self.set_motor_speed(2, -1*speed * power_scale)
+                self.set_motor_speed(2, -1*speed * ackermann_scale[1])
         else:
             self.set_motor_speed(1, speed)
-            self.set_motor_speed(2, -1*speed)                  
+            self.set_motor_speed(2, -1*speed) 
+
+        logging.debug("Done Moving forward")                
 
     def stop(self):
         '''
@@ -285,13 +296,30 @@ class Picarx(object):
     
     
 
-    def ackermann_steering_angle(self, wheelbase, track_width, steering_angle):
+    def ackermann_steering_angle(self, steering_angle):
+        # values for wheelbase and trackwidth from picar schematics
+        logging.debug("Calculating ackermann steering angle")
 
-        outer_radius = wheelbase / math.sin(math.radians(steering_angle))
-        inner_radius = outer_radius - track_width
-        inner_angle = math.degrees(math.atan(wheelbase / inner_radius))
+        wheelbase = 93.88 #L
+        track_width = (142.65 - 27.42) #D
+        x = wheelbase * math.tan(abs(steering_angle) * (math.pi / 180))
+        RICR = x + (track_width /2)
 
-        return inner_angle
+        front_wheel_right = math.sqrt((wheelbase ** 2) + (x ** 2))
+        front_wheel_left = math.sqrt((wheelbase ** 2) + (track_width + x) ** 2)
+
+        scale_inner = front_wheel_right / RICR
+        scale_outer = front_wheel_left / RICR
+
+        logging.debug("Done calculating ackermann steering angle")
+
+        return [scale_inner, scale_outer]
+
+
+
+
+
+        
     
 
 if __name__ == "__main__":
