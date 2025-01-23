@@ -74,12 +74,12 @@ if __name__ == "__main__":
                     px.set_dir_servo_angle(0)
                     px.forward(80)
                     sleep(1)
-                    px.set_dir_servo_angle(30)
+                    px.set_dir_servo_angle(-30)
                     px.forward(80)
                     sleep(4)
 
                     
-                    px.set_dir_servo_angle(30)
+                    px.set_dir_servo_angle(-30)
                     px.backward(80)
                     sleep(4)
 
