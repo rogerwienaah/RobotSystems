@@ -5,8 +5,8 @@ import readchar
 manual = '''
 Press keys on keyboard to control PiCar-X!
     a: Move forward / backwards
-    b: Turn left
-    c: Backward
+    b: parallel parking
+    c: K turning
 '''
 
 def show_info():
@@ -28,6 +28,7 @@ if __name__ == "__main__":
                 if 'a' == key:
                     px.set_dir_servo_angle(0)
                     px.forward(80)
+                    sleep(1)
 
                     # px.set_dir_servo_angle(30)
                     # px.forward(80)
