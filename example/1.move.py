@@ -21,6 +21,7 @@ if __name__ == "__main__":
             px.set_dir_servo_angle(angle)
             time.sleep(0.01)
         px.stop()
+        
         time.sleep(1)
         # test cam servos
         for angle in range(0, 35):

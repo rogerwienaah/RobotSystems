@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from .basic import _Basic_class
 from .utils import run_command
-from smbus2 import SMBus
+# from smbus2 import SMBus # ---changed for sim to work ---#
 import multiprocessing
 
 
@@ -39,7 +39,8 @@ class I2C(_Basic_class):
         """
         super().__init__(*args, **kwargs)
         self._bus = bus
-        self._smbus = SMBus(self._bus)
+        # self._smbus = SMBus(self._bus)  # ---changed for sim to work ---#
+        self._smbus = None
         if isinstance(address, list):
             connected_devices = self.scan()
             for _addr in address:
@@ -56,60 +57,68 @@ class I2C(_Basic_class):
     @_retry_wrapper
     def _write_byte(self, data):
         # with I2C.i2c_lock.get_lock():
-        self._debug(f"_write_byte: [0x{data:02X}]")
-        result = self._smbus.write_byte(self.address, data)
-        return result
+        # self._debug(f"_write_byte: [0x{data:02X}]")
+        # result = self._smbus.write_byte(self.address, data)
+        # return result
+        pass
 
     @_retry_wrapper
     def _write_byte_data(self, reg, data):
         # with I2C.i2c_lock.get_lock():
-        self._debug(f"_write_byte_data: [0x{reg:02X}] [0x{data:02X}]")
-        return self._smbus.write_byte_data(self.address, reg, data)
+        # self._debug(f"_write_byte_data: [0x{reg:02X}] [0x{data:02X}]")
+        # return self._smbus.write_byte_data(self.address, reg, data)
+        pass
 
     @_retry_wrapper
     def _write_word_data(self, reg, data):
         # with I2C.i2c_lock.get_lock():
-        self._debug(f"_write_word_data: [0x{reg:02X}] [0x{data:04X}]")
-        return self._smbus.write_word_data(self.address, reg, data)
+        # self._debug(f"_write_word_data: [0x{reg:02X}] [0x{data:04X}]")
+        # return self._smbus.write_word_data(self.address, reg, data)
+        pass
 
     @_retry_wrapper
     def _write_i2c_block_data(self, reg, data):
         # with I2C.i2c_lock.get_lock():
-        self._debug(
-            f"_write_i2c_block_data: [0x{reg:02X}] {[f'0x{i:02X}' for i in data]}"
-        )
-        return self._smbus.write_i2c_block_data(self.address, reg, data)
+        # self._debug(
+        #     f"_write_i2c_block_data: [0x{reg:02X}] {[f'0x{i:02X}' for i in data]}"
+        # )
+        # return self._smbus.write_i2c_block_data(self.address, reg, data)
+        pass
 
     @_retry_wrapper
     def _read_byte(self):
         # with I2C.i2c_lock.get_lock():
-        result = self._smbus.read_byte(self.address)
-        self._debug(f"_read_byte: [0x{result:02X}]")
-        return result
+        # result = self._smbus.read_byte(self.address)
+        # self._debug(f"_read_byte: [0x{result:02X}]")
+        # return result
+        pass
 
     @_retry_wrapper
     def _read_byte_data(self, reg):
         # with I2C.i2c_lock.get_lock():
-        result = self._smbus.read_byte_data(self.address, reg)
-        self._debug(f"_read_byte_data: [0x{reg:02X}] [0x{result:02X}]")
-        return result
+        # result = self._smbus.read_byte_data(self.address, reg)
+        # self._debug(f"_read_byte_data: [0x{reg:02X}] [0x{result:02X}]")
+        # return result
+        pass
 
     @_retry_wrapper
     def _read_word_data(self, reg):
         # with I2C.i2c_lock.get_lock():
-        result = self._smbus.read_word_data(self.address, reg)
-        result_list = [result & 0xFF, (result >> 8) & 0xFF]
-        self._debug(f"_read_word_data: [0x{reg:02X}] [0x{result:04X}]")
-        return result_list
+        # result = self._smbus.read_word_data(self.address, reg)
+        # result_list = [result & 0xFF, (result >> 8) & 0xFF]
+        # self._debug(f"_read_word_data: [0x{reg:02X}] [0x{result:04X}]")
+        # return result_list
+        pass
 
     @_retry_wrapper
     def _read_i2c_block_data(self, reg, num):
         # with I2C.i2c_lock.get_lock():
-        result = self._smbus.read_i2c_block_data(self.address, reg, num)
-        self._debug(
-            f"_read_i2c_block_data: [0x{reg:02X}] {[f'0x{i:02X}' for i in result]}"
-        )
-        return result
+        # result = self._smbus.read_i2c_block_data(self.address, reg, num)
+        # self._debug(
+        #     f"_read_i2c_block_data: [0x{reg:02X}] {[f'0x{i:02X}' for i in result]}"
+        # )
+        # return result
+        pass
 
     @_retry_wrapper
     def is_ready(self):
@@ -138,16 +147,18 @@ class I2C(_Basic_class):
         outputs = output.split('\n')[1:]
         addresses = []
         addresses_str = []
-        for tmp_addresses in outputs:
-            if tmp_addresses == "":
-                continue
-            tmp_addresses = tmp_addresses.split(':')[1]
-            # Split the addresses into a list
-            tmp_addresses = tmp_addresses.strip().split(' ')
-            for address in tmp_addresses:
-                if address != '--':
-                    addresses.append(int(address, 16))
-                    addresses_str.append(f'0x{address}')
+        
+        # ---changed for sim to work ---#
+        # for tmp_addresses in outputs:
+        #     if tmp_addresses == "":
+        #         continue
+        #     tmp_addresses = tmp_addresses.split(':')[1]
+        #     # Split the addresses into a list
+        #     tmp_addresses = tmp_addresses.strip().split(' ')
+        #     for address in tmp_addresses:
+        #         if address != '--':
+        #             addresses.append(int(address, 16))
+        #             addresses_str.append(f'0x{address}')
         self._debug(f"Conneceted i2c device: {addresses_str}")
         return addresses
 

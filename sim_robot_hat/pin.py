@@ -91,10 +91,11 @@ class Pin(_Basic_class):
         self._info("Pin init finished.")
 
     def close(self):
-        self.gpio.close()
+        # self.gpio.close() # -- changed for sim to work --#
+        pass
 
     def deinit(self):
-        self.gpio.close()
+        # self.gpio.close() # -- changed for sim to work --#
         self.gpio.pin_factory.close()
 
     def setup(self, mode, pull=None):
@@ -125,12 +126,15 @@ class Pin(_Basic_class):
                 self.gpio.close()
         #
         if mode in [None, self.OUT]:
-            self.gpio = OutputDevice(self._pin_num)
+            # self.gpio = OutputDevice(self._pin_num)
+            self.gpio = None
         else:
             if pull in [self.PULL_UP]:
-                self.gpio = InputDevice(self._pin_num, pull_up=True)
+                # self.gpio = InputDevice(self._pin_num, pull_up=True)
+                self.gpio = None
             else:
-                self.gpio = InputDevice(self._pin_num, pull_up=False)
+                # self.gpio = InputDevice(self._pin_num, pull_up=False)
+                self.gpio = None
 
     def dict(self, _dict=None):
         """
@@ -181,10 +185,10 @@ class Pin(_Basic_class):
                 self.setup(self.OUT)
             if bool(value):
                 value = 1
-                self.gpio.on()
+                # self.gpio.on() # -- changed for sim to work --#
             else:
                 value = 0
-                self.gpio.off()
+                # self.gpio.off()  # -- changed for sim to work --#
             return value
 
     def on(self):
@@ -268,7 +272,7 @@ class Pin(_Basic_class):
             if bouncetime != self._bouncetime:
                 pressed_handler = self.gpio.when_pressed
                 released_handler = self.gpio.when_released
-                self.gpio.close()
+                # self.gpio.close() # -- changed for sim to work --#
                 self.gpio = Button(pin=self._pin_num,
                                    pull_up=_pull_up,
                                    bounce_time=float(bouncetime / 1000))
