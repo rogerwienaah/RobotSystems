@@ -43,17 +43,27 @@ if __name__ == "__main__":
 
                 # parallel parking
                 elif 'b' == key:
+                    px.set_dir_servo_angle(0)
+                    px.forward(80)
+                    sleep(1)
                     px.set_dir_servo_angle(30)
                     px.forward(80)
-                    sleep(4)
-
-                    px.set_dir_servo_angle(-30)
-                    px.backward(80)
-                    sleep(4)
+                    sleep(3)
+                    px.set_dir_servo_angle(0)
+                    px.forward(80)
+                    sleep(1)
 
                     px.set_dir_servo_angle(0)
                     px.backward(80)
-                    sleep(4)
+                    sleep(1)
+
+                    px.set_dir_servo_angle(-30)
+                    px.backward(80)
+                    sleep(3)
+
+                    px.set_dir_servo_angle(0)
+                    px.backward(80)
+                    sleep(1)
 
                     px.backward(0)
                 
