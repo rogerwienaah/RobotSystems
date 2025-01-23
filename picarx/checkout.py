@@ -45,29 +45,29 @@ if __name__ == "__main__":
                 elif 'b' == key:
                     px.set_dir_servo_angle(0)
                     px.forward(80)
-                    sleep(1)
+                    sleep(0.4)
 
-                    px.set_dir_servo_angle(30)
-                    px.forward(80)
-                    sleep(3)
-
-                    px.set_dir_servo_angle(0)
+                    px.set_dir_servo_angle(45)
                     px.forward(80)
                     sleep(1)
 
-                    px.set_dir_servo_angle(30)
-                    px.backward(80)
-                    sleep(3)
-
-                    px.set_dir_servo_angle(-30)
-                    px.backward(80)
-                    sleep(2)
-
                     px.set_dir_servo_angle(0)
+                    px.forward(80)
+                    sleep(0.4)
+
+                    px.set_dir_servo_angle(45)
                     px.backward(80)
                     sleep(1)
 
-                    px.backward(0)
+                    px.set_dir_servo_angle(-45)
+                    px.backward(80)
+                    sleep(1)
+
+                    px.set_dir_servo_angle(0)
+                    px.backward(80)
+                    sleep(0.4)
+
+                    px.stop()
                 
                 #3-point turn
                 elif 'c' == key:
