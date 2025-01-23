@@ -238,8 +238,8 @@ class Picarx(object):
                 self.set_motor_speed(1, 1*speed * ackermann_scale[1])
                 self.set_motor_speed(2, -speed * ackermann_scale[0]) 
             else:
-                self.set_motor_speed(1, speed * ackermann_scale[1])
-                self.set_motor_speed(2, -1*speed * ackermann_scale[0])
+                self.set_motor_speed(1, speed * ackermann_scale[0])
+                self.set_motor_speed(2, -1*speed * ackermann_scale[1])
         else:
             self.set_motor_speed(1, speed)
             self.set_motor_speed(2, -1*speed) 
