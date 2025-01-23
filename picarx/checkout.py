@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 if 'a' == key:
                     px.set_dir_servo_angle(0)
                     px.forward(80)
-                    sleep(1)
+                    sleep(4)
                     px.forward(0)
 
                     # px.set_dir_servo_angle(30)
