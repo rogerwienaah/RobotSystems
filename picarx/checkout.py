@@ -16,8 +16,6 @@ def show_info():
 
 if __name__ == "__main__":
     try:
-        pan_angle = 0
-        tilt_angle = 0
         px = Picarx()
         show_info()
 
@@ -31,16 +29,16 @@ if __name__ == "__main__":
                     px.set_dir_servo_angle(0)
                     px.forward(80)
 
-                    px.set_dir_servo_angle(30)
-                    px.forward(80)
-                    sleep(1)
+                    # px.set_dir_servo_angle(30)
+                    # px.forward(80)
+                    # sleep(1)
 
-                    px.set_dir_servo_angle(-30)
-                    px.backward(80)
+                    # px.set_dir_servo_angle(-30)
+                    # px.backward(80)
 
-                    px.set_dir_servo_angle(0)
-                    px.backward(80)
-                    sleep(1)
+                    # px.set_dir_servo_angle(0)
+                    # px.backward(80)
+                    # sleep(1)
 
                 # parallel parking
                 elif 'b' == key:
