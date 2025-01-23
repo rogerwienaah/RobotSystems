@@ -29,6 +29,7 @@ if __name__ == "__main__":
                     px.set_dir_servo_angle(0)
                     px.forward(80)
                     sleep(1)
+                    px.forward(0)
 
                     # px.set_dir_servo_angle(30)
                     # px.forward(80)
@@ -54,6 +55,8 @@ if __name__ == "__main__":
                     px.set_dir_servo_angle(0)
                     px.backward(80)
                     sleep(1)
+
+                    px.backward(0)
                 
                 #3-point turn
                 elif 'c' == key:
