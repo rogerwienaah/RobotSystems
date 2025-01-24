@@ -47,6 +47,10 @@ def parallel_parking():
     px.forward(80)
     sleep(1)
 
+    px.set_dir_servo_angle(0)
+    px.backward(80)
+    sleep(0.2)
+
     px.set_dir_servo_angle(45)
     px.backward(80)
     sleep(1)
@@ -57,7 +61,7 @@ def parallel_parking():
 
     px.set_dir_servo_angle(0)
     px.backward(80)
-    sleep(0.3)
+    sleep(0.4)
 
     px.stop()
 
