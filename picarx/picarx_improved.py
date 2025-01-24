@@ -303,14 +303,16 @@ class Picarx(object):
 
         wheelbase = 93.88 #L
         track_width = (142.65 - 27.42) #D
-        x = wheelbase * math.tan(abs(steering_angle) * (math.pi / 180))
-        RICR = x + (track_width /2)
+        # x = wheelbase * math.tan(abs(steering_angle) * (math.pi / 180))
+        x= wheelbase / math.tan(abs(steering_angle) * (math.pi / 180))
 
-        front_wheel_right = math.sqrt((wheelbase ** 2) + (x ** 2))
-        front_wheel_left = math.sqrt((wheelbase ** 2) + (track_width + x) ** 2)
+        # RICR = x + (track_width /2)
 
-        scale_inner = front_wheel_right / RICR
-        scale_outer = front_wheel_left / RICR
+        # front_wheel_right = math.sqrt((wheelbase ** 2) + (x ** 2))
+        # front_wheel_left = math.sqrt((wheelbase ** 2) + (track_width + x) ** 2)
+
+        scale_inner = (x-(track_width/2)) / x
+        scale_outer = (x+(track_width/2)) / x
 
         logging.debug("Done calculating ackermann steering angle")
 
