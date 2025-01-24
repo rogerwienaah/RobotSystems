@@ -3,103 +3,112 @@ from time import sleep
 import readchar
 
 manual = '''
-Press keys on keyboard to control PiCar-X!
-    a: Move forward / backwards
-    b: parallel parking
-    c: K turning
+Press keys on keyboard to control the PiCar-X!
+    m: random basic movements
+    p: parallel parking
+    k: K turning
 '''
 
 def show_info():
     print("\033[H\033[J",end='')  # clear terminal windows
     print(manual)
 
+# some random movements 
+def basic_maneuvering():
+    px.set_dir_servo_angle(0)
+    px.forward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(30)
+    px.forward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(-30)
+    px.backward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(0)
+    px.backward(80)
+    sleep(1)
+
+    px.stop()
+
+# parallel parking
+def parallel_parking():
+    px.set_dir_servo_angle(0)
+    px.forward(80)
+    sleep(0.4)
+
+    px.set_dir_servo_angle(45)
+    px.forward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(-45)
+    px.forward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(45)
+    px.backward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(-45)
+    px.backward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(0)
+    px.backward(80)
+    sleep(0.4)
+
+    px.stop()
+
+# 3 point turning
+def k_turning():
+    px.set_dir_servo_angle(0)
+    px.forward(80)
+    sleep(0.4)
+
+    px.set_dir_servo_angle(45)
+    px.forward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(-45)
+    px.backward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(45)
+    px.forward(80)
+    sleep(1)
+
+    px.set_dir_servo_angle(0)
+    px.stop()
+
+
 
 if __name__ == "__main__":
-    try:
-        px = Picarx()
-        show_info()
+    px = Picarx()
+    show_info()
 
-        while True:
-            key = readchar.readkey()
-            key = key.lower()
-            if key in('abc'): 
+    while True:
+        key = readchar.readkey()
+        key = key.lower()
+        if key in('mpk'): 
 
-                # move forward & backward
-                if 'a' == key:
-                    px.set_dir_servo_angle(0)
-                    px.forward(80)
-                    sleep(3)
+            # move forward / backwards with some steering - basic maneuvering
+            if 'm' == key:
+                basic_maneuvering()
 
-                    px.set_dir_servo_angle(30)
-                    px.forward(80)
-                    sleep(1)
+            # parallel parking
+            elif 'p' == key:
+                parallel_parking()
+            
+            #3-point turn
+            elif 'k' == key:
+                k_turning()
+    
+        elif key == 'q':
+            print("\n Quit")
+            break
+ 
 
-                    px.set_dir_servo_angle(-30)
-                    px.backward(80)
-
-                    px.set_dir_servo_angle(0)
-                    px.backward(80)
-                    sleep(1)
-
-                # parallel parking
-                elif 'b' == key:
-                    px.set_dir_servo_angle(0)
-                    px.forward(80)
-                    sleep(0.4)
-
-                    px.set_dir_servo_angle(45)
-                    px.forward(80)
-                    sleep(1)
-
-                    px.set_dir_servo_angle(-45)
-                    px.forward(80)
-                    sleep(1)
-
-                    px.set_dir_servo_angle(45)
-                    px.backward(80)
-                    sleep(1)
-
-                    px.set_dir_servo_angle(-45)
-                    px.backward(80)
-                    sleep(1)
-
-                    px.set_dir_servo_angle(0)
-                    px.backward(80)
-                    sleep(0.4)
-
-                    px.stop()
-                
-                #3-point turn
-                elif 'c' == key:
-                    px.set_dir_servo_angle(0)
-                    px.forward(80)
-                    sleep(0.4)
-
-                    px.set_dir_servo_angle(45)
-                    px.forward(80)
-                    sleep(1)
-
-                    
-                    px.set_dir_servo_angle(-45)
-                    px.backward(80)
-                    sleep(1)
-
-                    px.set_dir_servo_angle(45)
-                    px.forward(80)
-                    sleep(1)
-
-                    px.set_dir_servo_angle(0)
-                    px.stop()
-
-
-          
-            elif key == 'q':
-                print("\n Quit")
-                break
-
-    finally: 
-        px.set_dir_servo_angle(0)  
-        px.stop()
-        sleep(.2)
 
 

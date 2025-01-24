@@ -204,7 +204,7 @@ class Picarx(object):
         logging.debug("Moving backward")
         current_angle = self.dir_current_angle
         if current_angle != 0:
-            ackermann_scale = self.ackermann_steering_angle(current_angle)
+            ackermann_scale = self.ackermann_steering_angle(current_angle) #using ackermann steering angle
             abs_current_angle = abs(current_angle)
             if abs_current_angle > self.DIR_MAX:
                 abs_current_angle = self.DIR_MAX
@@ -298,6 +298,7 @@ class Picarx(object):
 
     def ackermann_steering_angle(self, steering_angle):
         # values for wheelbase and trackwidth from picar schematics
+        # implementation based on this site: https://physics.stackexchange.com/questions/620458/how-do-we-implement-the-speed-differential-for-the-ackermann-steering
         logging.debug("Calculating ackermann steering angle")
 
         wheelbase = 93.88 #L
