@@ -65,19 +65,19 @@ def parallel_parking():
 def k_turning():
     px.set_dir_servo_angle(0)
     px.forward(80)
-    sleep(0.5)
+    sleep(0.4)
 
     px.set_dir_servo_angle(45)
     px.forward(80)
-    sleep(2)
+    sleep(1.5)
 
     px.set_dir_servo_angle(-45)
     px.backward(80)
-    sleep(2)
+    sleep(1.5)
 
-    px.set_dir_servo_angle(-45)
+    px.set_dir_servo_angle(45)
     px.forward(80)
-    sleep(2)
+    sleep(1.5)
 
     px.set_dir_servo_angle(0)
     px.stop()
