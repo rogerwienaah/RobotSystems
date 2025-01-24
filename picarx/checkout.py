@@ -75,7 +75,7 @@ def k_turning():
     px.backward(80)
     sleep(2)
 
-    px.set_dir_servo_angle(45)
+    px.set_dir_servo_angle(-45)
     px.forward(80)
     sleep(2)
 
