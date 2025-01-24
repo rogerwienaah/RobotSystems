@@ -35,9 +35,9 @@ def basic_maneuvering():
 
 # parallel parking
 def parallel_parking():
-    px.set_dir_servo_angle(0)
-    px.forward(80)
-    sleep(0.4)
+    # px.set_dir_servo_angle(0)
+    # px.forward(80)
+    # sleep(0.4)
 
     px.set_dir_servo_angle(45)
     px.forward(80)
@@ -55,9 +55,9 @@ def parallel_parking():
     px.backward(80)
     sleep(1)
 
-    px.set_dir_servo_angle(0)
-    px.backward(80)
-    sleep(0.4)
+    # px.set_dir_servo_angle(0)
+    # px.backward(80)
+    # sleep(0.4)
 
     px.stop()
 
@@ -91,6 +91,8 @@ if __name__ == "__main__":
     while True:
         key = readchar.readkey()
         key = key.lower()
+        px.set_dir_servo_angle(0)
+        
         if key in('mpk'): 
 
             # move forward / backwards with some steering - basic maneuvering
