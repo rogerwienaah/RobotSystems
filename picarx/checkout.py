@@ -6,7 +6,7 @@ manual = '''
 Press keys on keyboard to control the PiCar-X!
     m: random basic movements
     p: parallel parking
-    k: K turning
+    k: K turnings
 '''
 
 def show_info():
@@ -95,15 +95,12 @@ if __name__ == "__main__":
 
         if key in('mpk'): 
 
-            # move forward / backwards with some steering - basic maneuvering
             if 'm' == key:
                 basic_maneuvering()
 
-            # parallel parking
             elif 'p' == key:
                 parallel_parking()
             
-            #3-point turn
             elif 'k' == key:
                 k_turning()
     
