@@ -204,7 +204,7 @@ class Picarx(object):
         logging.debug("Moving backward")
         current_angle = self.dir_current_angle
         if current_angle != 0:
-            ackermann_scale = self.ackermann_steering_angle(current_angle) #using ackermann steering angle
+            ackermann_scale = self.ackermann_steering_angle(current_angle) # using ackermann steering angle
             abs_current_angle = abs(current_angle)
             if abs_current_angle > self.DIR_MAX:
                 abs_current_angle = self.DIR_MAX
@@ -250,6 +250,7 @@ class Picarx(object):
         '''
         Execute twice to make sure it stops
         '''
+        logging.debug("PiCar Stopped")
         for _ in range(2):
             self.motor_speed_pins[0].pulse_width_percent(0)
             self.motor_speed_pins[1].pulse_width_percent(0)
@@ -298,21 +299,23 @@ class Picarx(object):
 
     def ackermann_steering_angle(self, steering_angle):
         # values for wheelbase and trackwidth from picar schematics
-        # implementation based on this site: https://physics.stackexchange.com/questions/620458/how-do-we-implement-the-speed-differential-for-the-ackermann-steering
         logging.debug("Calculating ackermann steering angle")
 
-        wheelbase = 93.88 #L
-        track_width = (142.65 - 27.42) #D
-        # x = wheelbase * math.tan(abs(steering_angle) * (math.pi / 180))
-        x= wheelbase / math.tan(abs(steering_angle) * (math.pi / 180))
+        wheelbase = 93.88
+        track_width = (142.65 - 27.42)
+        
+        x = wheelbase / math.tan(abs(steering_angle) * (math.pi / 180))
 
+        
+
+        scale_inner = (x - (track_width / 2 )) / x
+        scale_outer = (x + ( track_width / 2)) / x
+        
+        # x = wheelbase * math.tan(abs(steering_angle) * (math.pi / 180))
         # RICR = x + (track_width /2)
 
         # front_wheel_right = math.sqrt((wheelbase ** 2) + (x ** 2))
         # front_wheel_left = math.sqrt((wheelbase ** 2) + (track_width + x) ** 2)
-
-        scale_inner = (x-(track_width/2)) / x
-        scale_outer = (x+(track_width/2)) / x
 
         logging.debug("Done calculating ackermann steering angle")
 
@@ -331,4 +334,3 @@ if __name__ == "__main__":
     time.sleep(1)
     atexit.register(px.stop)
     
-    # px.stop()

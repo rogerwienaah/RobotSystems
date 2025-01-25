@@ -88,6 +88,7 @@ if __name__ == "__main__":
     px = Picarx()
     show_info()
 
+    # user input
     while True:
         key = readchar.readkey()
         key = key.lower()
