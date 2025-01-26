@@ -5,11 +5,18 @@ import readchar
 px = Picarx()
 
 def basic_maneuvering():
+    px.set_dir_servo_angle(0)
+    px.forward(50)
+    sleep(0.5)
+
+
     px.set_dir_servo_angle(45)
-    sleep(1)
+    px.forward(50)
+    sleep(0.5)
 
     px.set_dir_servo_angle(-45)
-    sleep(1)
+    px.forward(50)
+    sleep(0.5)
 
     px.stop()
 
