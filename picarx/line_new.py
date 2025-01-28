@@ -19,14 +19,14 @@ from logging import DEBUG, INFO
 logging_format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO, datefmt="%H:%M:%S")
 
-from logdecorator import log_on_start, log_on_end, log_on_error
+# from logdecorator import log_on_start, log_on_end, log_on_error
 
 logging.getLogger().setLevel(logging.DEBUG)
 
 
 
 class GrayscaleSensing:
-    @log_on_end(DEBUG, "Grayscale Sensor Initialized")
+    # @log_on_end(DEBUG, "Grayscale Sensor Initialized")
     def __init__(self, pinLeft, pinMid, pinRight, reference = [1000]*3):
         
         if isinstance(pinLeft,str):
@@ -41,7 +41,7 @@ class GrayscaleSensing:
         
         self.reference(reference)
 
-    @log_on_start(DEBUG, "Setting Reference to: {ref}")
+    # @log_on_start(DEBUG, "Setting Reference to: {ref}")
     def reference(self, ref):
         if isinstance(ref, int) or isinstance(ref, float):
             self._reference = [ref] * 3
@@ -131,7 +131,7 @@ class Controller:
         self.max = maxTurn
 
     #@log_on_start(DEBUG, "Recieved Line State:{lineState}")
-    @log_on_end(DEBUG, "Angle: {result}")
+    # @log_on_end(DEBUG, "Angle: {result}")
     def getSteeringAngle(self, lineState):
         return lineState**3 * self.max * self.scale
 
