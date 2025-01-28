@@ -228,6 +228,7 @@ class Picarx(object):
         else:
             raise ValueError("grayscale reference must be a 1*3 list")
 
+    # get data from the grayscale module
     def get_grayscale_data(self):
         return list.copy(self.grayscale.read())
 
