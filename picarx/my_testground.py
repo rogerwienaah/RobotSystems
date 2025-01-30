@@ -3,4 +3,4 @@ from time import sleep
 
 px = Picarx()
 
-px.set_cam_tilt_angle(-30)
+px.set_cam_tilt_angle(-45)
