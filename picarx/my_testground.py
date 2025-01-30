@@ -3,6 +3,4 @@ from time import sleep
 
 px = Picarx()
 
-while True:
-    grayscale_data = px.get_grayscale_data()
-    print(grayscale_data)
+px.set_cam_tilt_angle(-30)
