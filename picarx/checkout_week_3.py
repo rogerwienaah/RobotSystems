@@ -8,6 +8,7 @@ logging.basicConfig(format=logging_format, level=logging.INFO, datefmt='%H:%M:%S
 logging.getLogger().setLevel(logging.DEBUG)
 
 
+
 class Sensor:
     """Handles sensor readings from the robot"""
     def __init__(self, picarx):
@@ -18,6 +19,8 @@ class Sensor:
         gm_val_list = self.px.get_grayscale_data()
         logging.debug("gm_val_list: %s" % gm_val_list)
         return gm_val_list
+
+
 
 
 class Interpreter:
@@ -38,6 +41,8 @@ class Interpreter:
             return 'right'
         elif state[2] == 1:
             return 'left'
+
+
 
 
 class Controller:
@@ -95,6 +100,8 @@ class Controller:
             self.px.stop()
             logging.info("stop and exit")
             sleep(0.1)
+
+
 
 
 if __name__ == '__main__':

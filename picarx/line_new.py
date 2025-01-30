@@ -166,6 +166,9 @@ def refLearner():
             avg[i] += raw[i]
         time.sleep(0.05)
     print(f"Average Reading: {avg[0]/100}, {avg[1]/100}, {avg[2]/100}")
+
+
+    
 if __name__=="__main__":
     #testSensorInterp()
     #testLineState()
