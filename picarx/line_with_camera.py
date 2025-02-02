@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 
-video_capture = cv2.VideoCapture()
+video_capture = cv2.VideoCapture(0)
 
 video_capture.set(3, 160)
 
@@ -25,12 +25,10 @@ while True:
 
 
     # Convert to grayscale
-
     gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
 
 
     # Gaussian blur
-
     blur = cv2.GaussianBlur(gray,(5,5),0)
 
  
