@@ -9,7 +9,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 
 
-class Sensor:
+class Sensor():
     """Handles sensor readings from the robot"""
     def __init__(self, picarx):
         self.px = picarx
@@ -24,7 +24,7 @@ class Sensor:
 
 
 
-class Interpreter:
+class Interpreter():
     """Interprets sensor data to determine movement direction"""
     def __init__(self, picarx):
         self.px = picarx
@@ -46,7 +46,7 @@ class Interpreter:
 
 
 
-class Controller:
+class Controller():
     """Controls the robot based on sensor input"""
     def __init__(self):
         self.px = Picarx()
