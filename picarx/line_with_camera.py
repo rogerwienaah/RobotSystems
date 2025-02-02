@@ -13,6 +13,8 @@ camera_config = picam2.create_preview_configuration()
 picam2.configure(camera_config)
 picam2.start()
 
+px = Picarx()
+px.set_cam_tilt_angle(-45)
 
 while True:
     img = picam2.capture_array()
