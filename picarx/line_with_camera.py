@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 
-video_capture = cv2.VideoCapture(-1)
+video_capture = cv2.VideoCapture()
 
 video_capture.set(3, 160)
 
