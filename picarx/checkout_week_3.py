@@ -18,6 +18,7 @@ class Sensor:
         """Returns grayscale sensor readings"""
         gm_val_list = self.px.get_grayscale_data()
         logging.debug("gm_val_list: %s" % gm_val_list)
+        sleep(0.01)
         return gm_val_list
 
 
