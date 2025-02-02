@@ -8,6 +8,7 @@ class SensorReader:
     def get_grayscale_data(self):
         return self.px.get_grayscale_data()
 
+
 class LineInterpreter:
     def __init__(self, picarx):
         self.px = picarx
@@ -22,6 +23,7 @@ class LineInterpreter:
             return 'right'
         elif _state[2] == 1:
             return 'left'
+
 
 class RobotController:
     def __init__(self, picarx, sensor_reader, line_interpreter):

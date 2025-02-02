@@ -21,7 +21,7 @@ while True:
 
     # Crop the image
 
-    crop_img = frame
+    crop_img = frame[60:120, 0:160]
 
 
     # Convert to grayscale
