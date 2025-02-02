@@ -1,99 +1,113 @@
 import numpy as np
-
 import cv2
+from picarx_improved import Picarx
 
 
-video_capture = cv2.VideoCapture(0)
-
-video_capture.set(3, 160)
-
-video_capture.set(4, 120)
-
-
-while True:
-
-
-    # Capture the frames
-
-    ret, frame = video_capture.read()
+from picamera2 import Picamera2, Preview
+import time
+picam2 = Picamera2()
+camera_config = picam2.create_preview_configuration()
+picam2.configure(camera_config)
+picam2.start_preview(Preview.QTGL)
+picam2.start()
+time.sleep(2)
+picam2.capture_file("test.jpg")
 
 
-    # Crop the image
 
-    crop_img = frame[60:120, 0:160]
-
-
-    # Convert to grayscale
-
-    gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+# px = Picarx()
 
 
-    # Gaussian blur
+# video_capture = cv2.VideoCapture(0)
 
-    blur = cv2.GaussianBlur(gray,(5,5),0)
+# video_capture.set(3, 160)
 
- 
+# video_capture.set(4, 120)
 
-    # Color thresholding
-
-    ret,thresh = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
+# while True:
 
 
-    # Find the contours of the frame
+#     # Capture the frames
 
-    contours,hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
+#     ret, frame = video_capture.read()
 
- 
 
-    # Find the biggest contour (if detected)
+#     # Crop the image
 
-    if len(contours) > 0:
+#     crop_img = frame[60:120, 0:160]
 
-        c = max(contours, key=cv2.contourArea)
 
-        M = cv2.moments(c)
+#     # Convert to grayscale
+
+#     gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+
+
+#     # Gaussian blur
+
+#     blur = cv2.GaussianBlur(gray,(5,5),0)
 
  
 
-        cx = int(M['m10']/M['m00'])
+#     # Color thresholding
 
-        cy = int(M['m01']/M['m00'])
+#     ret,thresh = cv2.threshold(blur,60,255,cv2.THRESH_BINARY_INV)
 
- 
 
-        cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
+#     # Find the contours of the frame
 
-        cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
-
- 
-
-        cv2.drawContours(crop_img, contours, -1, (0,255,0), 1)
+#     contours,hierarchy = cv2.findContours(thresh.copy(), 1, cv2.CHAIN_APPROX_NONE)
 
  
 
-        if cx >= 120:
+#     # Find the biggest contour (if detected)
 
-            print("Turn Left!")
+#     if len(contours) > 0:
 
+#         c = max(contours, key=cv2.contourArea)
 
-        if cx < 120 and cx > 50:
-
-            print("On Track!")
-
-
-        if cx <= 50:
-
-            print("Turn Right")
-
-    else:
-        print("I don't see the line")
+#         M = cv2.moments(c)
 
  
 
-    #Display the resulting frame
+#         cx = int(M['m10']/M['m00'])
 
-    cv2.imshow('frame',crop_img)
+#         cy = int(M['m01']/M['m00'])
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+ 
 
-        break
+#         cv2.line(crop_img,(cx,0),(cx,720),(255,0,0),1)
+
+#         cv2.line(crop_img,(0,cy),(1280,cy),(255,0,0),1)
+
+ 
+
+#         cv2.drawContours(crop_img, contours, -1, (0,255,0), 1)
+
+ 
+
+#         if cx >= 120:
+
+#             print("Turn Left!")
+
+
+#         if cx < 120 and cx > 50:
+
+#             print("On Track!")
+
+
+#         if cx <= 50:
+
+#             print("Turn Right")
+
+#     else:
+#         print("I don't see the line")
+
+ 
+
+#     #Display the resulting frame
+
+#     cv2.imshow('frame',crop_img)
+
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+
+#         break
