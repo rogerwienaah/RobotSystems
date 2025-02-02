@@ -110,4 +110,8 @@ picam2.capture_file("test.jpg")
 
 #     if cv2.waitKey(1) & 0xFF == ord('q'):
 
+<<<<<<< HEAD
 #         break
+=======
+        break
+>>>>>>> 3203996a25226e0f1622f103f39dad0ab15153e7
