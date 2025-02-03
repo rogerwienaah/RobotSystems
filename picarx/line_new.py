@@ -15,7 +15,7 @@ except ImportError:
 
 from picarx_improved import Picarx
 
-_SHOW_IMAGE = False
+_SHOW_IMAGE = True
 
 
 class CameraBasedFollower(Picarx):
