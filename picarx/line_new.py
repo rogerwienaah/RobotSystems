@@ -7,9 +7,8 @@ import numpy as np
 import cv2
 import math
 try:
-    from picamera2 import Picamera2
-    from picamera2.array import PiRGBArray
-
+    from picamera2 import Picamera
+    # from picamera.array import PiRGBArray
 except ImportError:
     print("No Picamera available ")
     exit()
@@ -20,19 +19,18 @@ _SHOW_IMAGE = False
 
 
 class CameraBasedFollower(Picarx):
+      
     def __init__(self):
         super().__init__()
         self.camera = Picamera2()
-        self.camera.resolution = (640, 480)
-        self.camera.framerate = 24
-        self.camera.start_preview()
-        self.stream = PiRGBArray(self.camera, size=self.camera.resolution)
+        config = self.camera.create_preview_configuration(main={'size': (640, 480)})
+        self.camera.configure(config)
+        self.camera.start()
         time.sleep(1)
 
     def sensor(self):
-        self.camera.capture(self.stream, format="bgr")
-
-        return self.stream.array
+        frame = self.camera.capture_array()
+        return frame
 
     def interpreter(self):
         frame = self.sensor()
@@ -45,8 +43,6 @@ class CameraBasedFollower(Picarx):
         self.set_dir_servo_angle(int(turn))
         time.sleep(0.01)
         return turn
-    
-
 
 def detect_lane(frame):
 
@@ -140,7 +136,6 @@ def average_slope_intercept(frame, line_segments):
         lane_lines.append(make_points(frame, right_fit_average))
 
     return lane_lines
-
 
 def display_lines(frame, lines, line_color=(0, 255, 0), line_width=10):
 
@@ -236,4 +231,4 @@ if __name__ == "__main__":
         car.forward(30)
         time.sleep(0.05)
         cv2.destroyAllWindows()
-        car.stream = PiRGBArray(car.camera, size=car.camera.resolution)
+        # car.stream = PiRGBArray(car.camera, size=car.camera.resolution)
