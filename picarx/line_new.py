@@ -1,35 +1,26 @@
 import sys
-# sys.path.append(r'/home/kaanb/RobotSystems/lib')
+sys.path.append(r'/home/kaanb/RobotSystems/lib')
 import atexit
 import time
-import numpy
 import numpy as np
 import cv2
 import math
-try:
-    from picamera2 import Picamera2
-    # from picamera.array import PiRGBArray
-except ImportError:
-    print("No Picamera available ")
-    exit()
-
+from picamera2 import Picamera2
+from picamera2.previews.qt import QPicamera2
 from picarx_improved import Picarx
 
-_SHOW_IMAGE = True
-
+_SHOW_IMAGE = False
 
 class CameraBasedFollower(Picarx):
-      
     def __init__(self):
         super().__init__()
-        self.camera = Picamera2()
-        config = self.camera.create_preview_configuration(main={'size': (640, 480)})
-        self.camera.configure(config)
-        self.camera.start()
+        self.picam2 = Picamera2()
+        self.picam2.configure(self.picam2.create_preview_configuration(main={"size": (640, 480)}))
+        self.picam2.start()
         time.sleep(1)
 
     def sensor(self):
-        frame = self.camera.capture_array()
+        frame = self.picam2.capture_array()
         return frame
 
     def interpreter(self):
@@ -45,7 +36,6 @@ class CameraBasedFollower(Picarx):
         return turn
 
 def detect_lane(frame):
-
     edges = detect_edges(frame)
     show_image('edges', edges)
     cropped_edges = region_of_interest(edges)
@@ -60,7 +50,6 @@ def detect_lane(frame):
     return lane_lines, lane_lines_image
 
 def detect_edges(frame):
-
     # filter for blue lane lines
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     show_image("hsv", hsv)
@@ -74,7 +63,6 @@ def detect_edges(frame):
     return edges
 
 def region_of_interest(canny):
-
     height, width = canny.shape
     mask = np.zeros_like(canny)
     # only focus bottom half of the screen
@@ -91,7 +79,6 @@ def region_of_interest(canny):
     return masked_image
 
 def detect_line_segments(cropped_edges):
-
     # tuning min_threshold, minLineLength, maxLineGap is a trial and error process by hand
     rho = 1  # precision in pixel, i.e. 1 pixel
     angle = np.pi / 180  # degree in radian, i.e. 1 degree
@@ -138,7 +125,6 @@ def average_slope_intercept(frame, line_segments):
     return lane_lines
 
 def display_lines(frame, lines, line_color=(0, 255, 0), line_width=10):
-
     line_image = np.zeros_like(frame)
     if lines is not None:
         for line in lines:
@@ -148,8 +134,7 @@ def display_lines(frame, lines, line_color=(0, 255, 0), line_width=10):
 
     return line_image
 
-def display_heading_line(frame, steering_angle, line_color=(0, 0, 255), line_width=5, ):
-
+def display_heading_line(frame, steering_angle, line_color=(0, 0, 255), line_width=5):
     heading_image = np.zeros_like(frame)
     height, width, _ = frame.shape
 
@@ -173,7 +158,6 @@ def display_heading_line(frame, steering_angle, line_color=(0, 0, 255), line_wid
     return heading_image
 
 def length_of_line_segment(line):
-
     x1, y1, x2, y2 = line
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
@@ -182,7 +166,6 @@ def show_image(title, frame, show=_SHOW_IMAGE):
         cv2.imshow(title, frame)
 
 def make_points(frame, line):
-
     height, width, _ = frame.shape
     slope, intercept = line
     y1 = height  # bottom of the frame
@@ -222,7 +205,6 @@ def compute_steering_angle(frame, lane_lines):
     return steering_angle
 
 if __name__ == "__main__":
-
     car = CameraBasedFollower()
     atexit.register(car.stop)
     while True:
@@ -231,4 +213,3 @@ if __name__ == "__main__":
         car.forward(30)
         time.sleep(0.05)
         cv2.destroyAllWindows()
-        # car.stream = PiRGBArray(car.camera, size=car.camera.resolution)
