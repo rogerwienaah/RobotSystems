@@ -7,7 +7,7 @@ import numpy as np
 import cv2
 import math
 try:
-    from picamera2 import Picamera
+    from picamera2 import Picamera2
     # from picamera.array import PiRGBArray
 except ImportError:
     print("No Picamera available ")
