@@ -7,7 +7,7 @@ import numpy as np
 import cv2
 import math
 try:
-    from picamera import PiCamera
+    from picamera2 import PiCamera2
     from picamera.array import PiRGBArray
 
 except ImportError:
@@ -22,7 +22,7 @@ _SHOW_IMAGE = False
 class CameraBasedFollower(Picarx):
     def __init__(self):
         super().__init__()
-        self.camera = PiCamera()
+        self.camera = PiCamera2()
         self.camera.resolution = (640, 480)
         self.camera.framerate = 24
         self.camera.start_preview()
