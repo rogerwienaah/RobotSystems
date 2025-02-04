@@ -5,14 +5,17 @@ import logging
 import numpy as np
 import cv2
 
+# logging configuration
 logging_format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=logging_format, level = logging.INFO, datefmt="%H:%M:%S")
 logging.getLogger().setLevel(logging.DEBUG)
+
 
 class Sense():
     def __init__(self, camera = False):
         self.px = Picarx()
         self.reference = np.array(self.px.grayscale._reference)
+
         if camera:
             Vilib.camera_start()
             time.sleep(0.5)
@@ -28,6 +31,7 @@ class Sense():
         logging.debug("Photo Taken")
         Vilib.take_photo(photo_name = self.image_name, path = self.path)
         time.sleep(0.1)
+
 
 class Interpret():
     def __init__(self, range = [0, 3600], polarity = False):
@@ -103,6 +107,7 @@ class Interpret():
     def robot_position(self):
         logging.debug(f'Robot Location: {self.robot_location}')
         return self.robot_location
+
 
 class Control():
         def __init__(self, k_p = 30, k_i = 0.0, threshold = 0.1):
