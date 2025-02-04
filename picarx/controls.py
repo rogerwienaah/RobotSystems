@@ -57,7 +57,7 @@ class Interpret():
 
         try:
             if left > right:
-                self.robot_location = (middle - left)/max(left, middle)
+                self.robot_location = (middle - left) / max(left, middle)
                 if self.robot_location < 0:
                     self.robot_location = self.robot_location
                     return
@@ -92,13 +92,13 @@ class Interpret():
             return 
 
         if M['m00'] != 0:
-            # cx = int(M['m10']/M['m00'])
-            # cy = int(M['m01']/M['m00'])
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
             self.robot_location = (int(M['m10']/M['m00']) - img_width)/img_width
-            # cv2.circle(gray_img, (cx, cy), 5, (0, 0, 255), -1)
-        # cv2.imshow("Gray", gray_img)
-        # cv2.waitKey(0)
-        #cv2.destroyAllWindows()
+            cv2.circle(gray_img, (cx, cy), 5, (0, 0, 255), -1)
+        cv2.imshow("Gray", gray_img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
     def robot_position(self):
         logging.debug(f'Robot Location: {self.robot_location}')
