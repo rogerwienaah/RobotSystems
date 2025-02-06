@@ -26,7 +26,7 @@ class Interpret():
             return 'stop'  # Default to stop if no condition is met
 
 class Control():
-    def __init__(self, picarx, sensor_reader, line_interpreter, px_power=10, offset=20):
+    def __init__(self, picarx, sensor_reader, line_interpreter, px_power=80, offset=20):
         self.px = picarx
         self.sensor_reader = sensor_reader
         self.line_interpreter = line_interpreter
