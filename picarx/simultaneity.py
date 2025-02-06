@@ -50,6 +50,8 @@ class Sense():
                 logging.debug("No greyscale found")
             time.sleep(self.sense_delay)
 
+
+
 class Interpret():
     def __init__(self, sense_interpret_bus, interpret_control_bus, sense_delay = 0.1, control_delay = 0.1, range = [0, 3600], polarity = False):
         ''' Initialize Interpreter
@@ -206,6 +208,9 @@ class Bus():
             message = self.message
         return message
 
+
+
+
 if __name__ == "__main__":
     method = 0
     px = Picarx()
@@ -225,11 +230,14 @@ if __name__ == "__main__":
         control = Control(interpret_control_bus=interpret_control_bus, control_delay=control_delay, px = px, threshold = 0.1)
         time.sleep(2)
         sense.px.forward(30)
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             eSensor = executor.submit(sense.set_grayscale_to_bus)
             eInterpreter = executor.submit(think.line_location_grayscale)
             eRobot = executor.submit(think.robot_position)
             eControl = executor.submit(control.steer)
+
+
 
     elif method == 2:
         sense = Sense(px = px, sense_interpret_bus=sense_interpret_bus, sense_delay=sense_delay, camera = True)
@@ -238,13 +246,16 @@ if __name__ == "__main__":
         control = Control(interpret_control_bus=interpret_control_bus, control_delay=control_delay, px = px, threshold = 0.05)
         time.sleep(2)
         sense.px.forward(30)
+
+
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             eSensor = executor.submit(sense.take_photo)
             eInterpreter = executor.submit(think.line_location_camera)
             eRobot = executor.submit(think.robot_position)
             eControl = executor.submit(control.steer)
 
-            
+
     eInterpreter.result()
     eSensor.result()
     eControl.result()
