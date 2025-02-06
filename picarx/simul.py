@@ -26,6 +26,8 @@ class Bus:
     def read(self):
         with self.lock.gen_rlock():
             return self.message
+        
+
 
 class Sensing():
 

@@ -205,7 +205,7 @@ if __name__ == "__main__":
     # Grayscale line following
     if choice == 1:
         sense = Sense(camera=False)
-        think = Interpret(polarity = True)
+        think = Interpret(polarity = False)
         control = Control(threshold = 0.1)
         time.sleep(2)
         sense.px.forward(30)

@@ -6,6 +6,22 @@ from threading import Event
 
 
 
+
+class Bus():
+    # initialize class
+    def __init__(self):
+        self.message = None
+        
+    
+    # write to bus
+    def write(self, message):
+        self.message = message
+
+    # read from bus
+    def read(self):
+        return self.message
+
+
 def sensor_producer(busIns, time_delay):
     while True:
         sensor_data = Sense.get_grayscale_data()
@@ -28,21 +44,6 @@ def control_cons(busIns, time_delay):
         control = Control.steer(line_status)
         time.sleep(time_delay)
 
-
-
-class Bus():
-    # initialize class
-    def __init__(self):
-        self.message = None
-        
-    
-    # write to bus
-    def write(self, message):
-        self.message = message
-
-    # read from bus
-    def read(self):
-        return self.message
 
 
 
