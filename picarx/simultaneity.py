@@ -1,4 +1,4 @@
-from picarx_improved import Picarx
+from picarx_new import Picarx
 try:
     from vilib import Vilib
 except:
@@ -230,6 +230,7 @@ if __name__ == "__main__":
             eInterpreter = executor.submit(think.line_location_grayscale)
             eRobot = executor.submit(think.robot_position)
             eControl = executor.submit(control.steer)
+
     elif method == 2:
         sense = Sense(px = px, sense_interpret_bus=sense_interpret_bus, sense_delay=sense_delay, camera = True)
         think = Interpret(sense_interpret_bus=sense_interpret_bus, interpret_control_bus=interpret_control_bus, 
@@ -242,6 +243,8 @@ if __name__ == "__main__":
             eInterpreter = executor.submit(think.line_location_camera)
             eRobot = executor.submit(think.robot_position)
             eControl = executor.submit(control.steer)
+
+            
     eInterpreter.result()
     eSensor.result()
     eControl.result()
