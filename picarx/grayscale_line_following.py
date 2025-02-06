@@ -2,16 +2,16 @@ from picarx_improved import Picarx
 from time import sleep
 
 class Sensor():
-    def __init__(self):
-        self.px = Picarx()
+    def __init__(self, picarx):
+        self.px = picarx
     
     def get_grayscale_data(self):
         return self.px.get_grayscale_data()
 
 
 class Interpret():
-    def __init__(self):
-        self.px = Picarx()
+    def __init__(self, picarx):
+        self.px = picarx
     
     def get_status(self, val_list):
         _state = self.px.get_line_status(val_list)  # [bool, bool, bool], 0 means line, 1 means background
@@ -30,7 +30,7 @@ class Control():
         self.px = picarx
         self.sensor_reader = sensor_reader
         self.line_interpreter = line_interpreter
-        self.px_power = 10
+        self.px_power = 40
         self.offset = 20
         self.last_state = "stop"
     
@@ -83,7 +83,7 @@ class Control():
 
 if __name__ == '__main__':
     px = Picarx()
-    sensor_reader = Sensor()
-    line_interpreter = Interpret()
+    sensor_reader = Sensor(px)
+    line_interpreter = Interpret(px)
     controller = Control(px, sensor_reader, line_interpreter)
     controller.run()
