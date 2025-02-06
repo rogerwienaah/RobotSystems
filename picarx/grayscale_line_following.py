@@ -1,17 +1,17 @@
 from picarx_improved import Picarx
 from time import sleep
 
-class SensorReader:
-    def __init__(self, picarx):
-        self.px = picarx
+class Sensor():
+    def __init__(self):
+        self.px = Picarx()
     
     def get_grayscale_data(self):
         return self.px.get_grayscale_data()
 
 
-class LineInterpreter:
-    def __init__(self, picarx):
-        self.px = picarx
+class Interpret():
+    def __init__(self):
+        self.px = Picarx()
     
     def get_status(self, val_list):
         _state = self.px.get_line_status(val_list)  # [bool, bool, bool], 0 means line, 1 means background
@@ -25,7 +25,7 @@ class LineInterpreter:
             return 'left'
 
 
-class RobotController:
+class Control():
     def __init__(self, picarx, sensor_reader, line_interpreter):
         self.px = picarx
         self.sensor_reader = sensor_reader
@@ -45,9 +45,14 @@ class RobotController:
             gm_val_list = self.sensor_reader.get_grayscale_data()
             gm_state = self.line_interpreter.get_status(gm_val_list)
             print("outHandle gm_val_list: %s, %s" % (gm_val_list, gm_state))
+            
+
             if gm_state != self.last_state:
                 break
         sleep(0.001)
+
+
+    
     
     def run(self):
         try:
@@ -74,10 +79,11 @@ class RobotController:
             self.px.stop()
             print("stop and exit")
             sleep(0.1)
+    
 
 if __name__ == '__main__':
     px = Picarx()
-    sensor_reader = SensorReader(px)
-    line_interpreter = LineInterpreter(px)
-    controller = RobotController(px, sensor_reader, line_interpreter)
+    sensor_reader = Sensor()
+    line_interpreter = Interpret()
+    controller = Control(px, sensor_reader, line_interpreter)
     controller.run()

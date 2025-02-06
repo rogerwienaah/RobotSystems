@@ -10,7 +10,6 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 
 
-
 class Maneuvering:
 
     def __init__(self):
@@ -40,60 +39,64 @@ class Maneuvering:
         self.px.backward(80)
         sleep(1)
 
-        px.set_dir_servo_angle(0)
-        px.backward(80)
+        self.px.set_dir_servo_angle(0)
+        self.px.backward(80)
         sleep(1)
 
-        px.stop()
+        self.px.stop()
 
     # parallel parking
     def parallel_parking(self):
-        px.set_dir_servo_angle(0)
-        px.forward(80)
+        logging.info("Parallel parking started")
+        self.px.set_dir_servo_angle(0)
+        self.px.forward(80)
         sleep(0.3)
 
-        px.set_dir_servo_angle(45)
-        px.forward(80)
+        self.px.set_dir_servo_angle(45)
+        self.px.forward(80)
         sleep(1)
 
-        px.set_dir_servo_angle(-45)
-        px.forward(80)
+        self.px.set_dir_servo_angle(-45)
+        self.px.forward(80)
         sleep(1)
 
-        px.set_dir_servo_angle(45)
-        px.backward(80)
+        self.px.set_dir_servo_angle(45)
+        self.px.backward(80)
         sleep(1)
 
-        px.set_dir_servo_angle(-45)
-        px.backward(80)
+        self.px.set_dir_servo_angle(-45)
+        self.px.backward(80)
         sleep(1)
 
-        px.set_dir_servo_angle(0)
-        px.backward(80)
+        self.px.set_dir_servo_angle(0)
+        self.px.backward(80)
         sleep(1)
 
-        px.stop()
+        self.px.stop()
+        logging.info("Parallel parking completed")
 
     # 3 point turning
     def k_turning(self):
-        px.set_dir_servo_angle(0)
-        px.forward(80)
+        logging.info("K-turning started")
+        self.px.set_dir_servo_angle(0)
+        self.px.forward(80)
         sleep(0.4)
 
-        px.set_dir_servo_angle(45)
-        px.forward(80)
+        self.px.set_dir_servo_angle(45)
+        self.px.forward(80)
         sleep(1.5)
 
-        px.set_dir_servo_angle(-45)
-        px.backward(80)
+        self.px.set_dir_servo_angle(-45)
+        self.px.backward(80)
         sleep(1.5)
 
-        px.set_dir_servo_angle(45)
-        px.forward(80)
+        self.px.set_dir_servo_angle(45)
+        self.px.forward(80)
         sleep(1.5)
 
-        px.set_dir_servo_angle(0)
-        px.stop()
+        self.px.set_dir_servo_angle(0)
+        self.px.stop()
+        logging.info("K-turning completed")
 
     def control_loop(self):
         self.show_info()
