@@ -1,163 +1,136 @@
-from picarx_new import Picarx
-from vilib import Vilib
 import time
-import logging
-import numpy as np
-import cv2
+from picarx_improved import Picarx
+import concurrent.futures
+from readerwriterlock import rwlock
 
-# logging configuration
-logging_format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=logging_format, level = logging.INFO, datefmt="%H:%M:%S")
-logging.getLogger().setLevel(logging.DEBUG)
+try:
+    from robot_hat import ADC
+    from robot_hat.utils import reset_mcu, run_command
+except ImportError:
+    from sim_robot_hat import ADC
+    from sim_robot_hat import reset_mcu, run_command
 
+reset_mcu()
+time.sleep(0.2)
+px = Picarx()
 
-class Sense():
-    def __init__(self, camera = False):
-        self.px = Picarx()
-        self.reference = np.array(self.px.grayscale._reference)
+class Bus:
+    def __init__(self):
+        self.message = [0, 0, 0]  
+        self.lock = rwlock.RWLockWriteD()
 
-        # Check for camera choice
-        if camera:
-            Vilib.camera_start()
-            time.sleep(0.5)
-            self.path = "picarx"
-            self.image_name = "img"
-            self.px.set_cam_tilt_angle(-30)
-            #Vilib.display()
-    
-    def get_grayscale(self):
-        return np.array(self.px.grayscale.read()) - self.reference
-    
-    def capture_image(self):
-        Vilib.take_photo(self.image_name, self.path)
-        logging.debug("took image")
-        time.sleep(0.1)
+    def write(self, message):
+        with self.lock.gen_wlock():
+            self.message = message
 
-
-class Interpret():
-    def __init__(self, range = [0, 3600], polarity = False):
-        ''' Initialize Interpreter
+    def read(self):
+        with self.lock.gen_rlock():
+            return self.message
         
-        param range: Indicates range of acceptable light -> dark values
-        type range: list[int, int]
-        param polarity: False indicates light floor, dark line, True indicates dark floor, light line
-        type polarity: Bool      
-        '''
-        self.low_range, self.high_range = range
+
+
+class Sensing():
+
+    def __init__(self):
+            self.chn_0 = ADC('A0')
+            self.chn_1 = ADC('A1')
+            self.chn_2 = ADC('A2')
+
+    def get_grayscale_data(self):
+        adc_value_list = []
+        adc_value_0 = self.chn_0.read()
+        adc_value_1 = self.chn_1.read()
+        adc_value_2 = self.chn_2.read()
+        adc_value_list.append(adc_value_0)
+        adc_value_list.append(adc_value_1)
+        adc_value_list.append(adc_value_2)
+        return adc_value_list
+
+      
+    def read(self):
+        return self.get_grayscale_data()
+    
+    def sensor(self, bus, delay):
+        while True:
+            bus.write(self.get_grayscale_data())
+            time.sleep(delay)
+            
+class Interpreter():
+     
+    def __init__(self,sensitivity=0.7, polarity=-1):
+        self.sensitivity = sensitivity
         self.polarity = polarity
-        self.robot_location = 0
-        self.thresh = 75
-        self.colour = 255
-
-        #image cropping
-        self.img_start = 350
-        self.img_cutoff = 425
     
-    def line_location_grayscale(self, grayscale_values):
-        if self.polarity:
-            grayscale_values = [grayscale_value - min(grayscale_values) for grayscale_value in grayscale_values] 
+    def interpret(self, readings):
+       
+        avg = sum(readings) / len(readings)
+        if self.polarity == 1:
+            return [1 if (reading - avg) > self.sensitivity else 0 for reading in readings]
         else:
-            grayscale_values = [abs(grayscale_value - max(grayscale_values)) for grayscale_value in grayscale_values] 
-
-        left, middle, right = grayscale_values
-        logging.debug(f'MODIFIED - Left: {left}, Middle: {middle}, Right: {right}')
-
-        try:
-            if left > right:
-                self.robot_location = (middle - left) / max(left, middle)
-                if self.robot_location < 0:
-                    self.robot_location = self.robot_location
-                    return
-                self.robot_location -= 1
-                return
-            self.robot_location = (middle-right)/max(middle, right)
-            if self.robot_location < 0:
-                self.robot_location = -1*self.robot_location
-                return
-            self.robot_location = 1-self.robot_location
-            return
-        except:
-            logging.debug(f'Divide by zero error, continuing')
-
-    def line_location_camera(self, path, image_name):
-        gray_img = cv2.imread(f'{path}/{image_name}.jpg')
-        gray_img = cv2.cvtColor(gray_img, cv2.COLOR_BGR2GRAY)
-        gray_img = gray_img[self.img_start:self.img_cutoff, :]
-        _, img_width = gray_img.shape
-        img_width /= 2
-        if self.polarity:
-            _, mask = cv2.threshold(gray_img, thresh = self.thresh, maxval=self.colour, type = cv2.THRESH_BINARY)
-        else:
-            _, mask = cv2.threshold(gray_img, thresh = self.thresh, maxval=self.colour, type = cv2.THRESH_BINARY_INV)
+            return [0 if (reading - avg) > self.sensitivity else 1 for reading in readings]
+            
+    def map_readings_to_value(self,readings):
+        #print(f"Int is processing value: {readings}")
+        if readings == [0, 1, 0]:
+            return 0
+        elif readings == [0, 1, 1]:
+            return 0.5
+        elif readings == [0, 0, 1]:
+            return 1
+        elif readings == [1, 1, 0]:
+            return -0.5
+        elif readings == [1, 0, 0]:
+            return -1
+        elif readings == [1, 1, 1]:
+            return 0
+        elif readings == [0, 0, 0]:
+            return 0
         
-        try:
-            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            largest_contour = max(contours, key=cv2.contourArea)
-            M = cv2.moments(largest_contour)
-        except:
-            logging.debug("NO CONTOUR FOUND")
-            return 
+    def interpreter(self, bus_sensor, bus_control, delay):
+        while True:
+            readings = bus_sensor.read()
+            interpreted = self.map_readings_to_value(self.interpret(readings))
+            bus_control.write(interpreted)
+            time.sleep(delay)
 
-        if M['m00'] != 0:
-            # cx = int(M['m10']/M['m00'])
-            # cy = int(M['m01']/M['m00'])
-            self.robot_location = (int(M['m10']/M['m00']) - img_width)/img_width
-            # cv2.circle(gray_img, (cx, cy), 5, (0, 0, 255), -1)
-        # cv2.imshow("Gray", gray_img)
-        # cv2.waitKey(0)
-        #cv2.destroyAllWindows()
+class Controller():
+    def __init__(self,scaling=1.0):
+        self.scaling = scaling
 
-    def robot_position(self):
-        logging.debug(f'Robot Location: {self.robot_location}')
-        return self.robot_location
+    def controller(self, bus, delay):
+        while True:
+            value = bus.read()
+            self.control(value)
+            time.sleep(delay)
 
+    def control(self, value):
+        #print(f"Controller is processing value: {value}")
+        if value == 0:
+            px.set_dir_servo_angle(0)
+        elif value == 1:
+            px.set_dir_servo_angle(30*self.scaling)
+        elif value == -1:
+            px.set_dir_servo_angle(-30*self.scaling)
+        elif value == -0.5:
+            px.set_dir_servo_angle(-30*self.scaling)
+        elif value == 0.5:
+            px.set_dir_servo_angle(30*self.scaling)
 
-class Control():
-        def __init__(self, k_p = 30, k_i = 0.0, threshold = 0.1):
-            self.k_p = k_p
-            self.k_i = k_i
-            self.threshold = threshold
-            self.error = 0.0
-            self.angle = 0.0
     
-        def steer(self, px, car_position):
-            if abs(car_position) > self.threshold:
-                self.error += car_position
-                self.angle = self.k_p * car_position + self.error * self.k_i
-                logging.debug(f'Steering Angle: {self.angle}')
-                px.set_dir_servo_angle(self.angle)
-                return self.angle
-            self.angle = 0
-            logging.debug(f'Steering Angle: {self.angle}')
-            px.set_dir_servo_angle(self.angle)
-            return self.angle
 
 if __name__ == "__main__":
-    choice = 0
-    while choice != 1 and choice != 2:
-        choice = int(input("Select 1 for grayscale or 2 for camera based line following: "))
-    
-    # Grayscale line following
-    if choice == 1:
-        sense = Sense(camera=False)
-        think = Interpret(polarity = False)
-        control = Control(threshold = 0.1)
-        time.sleep(2)
-        sense.px.forward(30)
-        while True:
-            think.line_location_grayscale(sense.get_grayscale())
-            robot_position = think.robot_position()
-            control.steer(sense.px, robot_position)
+    px.forward(30)
+    bus_sensor = Bus()
+    bus_control = Bus()
+    sensing = Sensing()
+    interpreter = Interpreter(sensitivity=0.99, polarity=-1)
+    controller = Controller(scaling=1)
 
-    # Camera line following 
-    elif choice == 2:
-        sense = Sense(camera=True)
-        think = Interpret(polarity = False)
-        control = Control(threshold = 0.05)
-        time.sleep(2)
-        sense.px.forward(30) 
-        while True:
-            sense.capture_image()
-            think.line_location_camera(sense.path, sense.image_name)
-            robot_position = think.robot_position()
-            control.steer(sense.px, robot_position)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        eSensor = executor.submit(sensing.sensor, bus_sensor, 0.001)
+        eInterpreter = executor.submit(interpreter.interpreter, bus_sensor, bus_control, 0.01)
+        eController = executor.submit(controller.controller, bus_control, 0.1 )
+        
+eSensor.result()
+eInterpreter.result()
+eController.result()

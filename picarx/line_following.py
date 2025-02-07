@@ -154,46 +154,46 @@ If the robot starts overcorrecting, reduce k_i.
 """
 
 
-# class Control():
-#     def __init__(self, k_p=30, k_i=0.0, k_d=5.0, threshold=0.1):
-#         self.k_p = k_p  # Proportional gain
-#         self.k_i = k_i  # Integral gain
-#         self.k_d = k_d  # Derivative gain
-#         self.threshold = threshold  # Dead zone threshold
+class Control():
+    def __init__(self, k_p=30, k_i=0.0, k_d=5.0, threshold=0.1):
+        self.k_p = k_p  # Proportional gain
+        self.k_i = k_i  # Integral gain
+        self.k_d = k_d  # Derivative gain
+        self.threshold = threshold  # Dead zone threshold
 
-#         self.error = 0.0  # Accumulated integral error
-#         self.prev_error = 0.0  # Previous error for derivative calculation
-#         self.angle = 0.0  # Steering angle
-#         self.last_time = time.time()  # Store last timestamp for derivative calculation
+        self.error = 0.0  # Accumulated integral error
+        self.prev_error = 0.0  # Previous error for derivative calculation
+        self.angle = 0.0  # Steering angle
+        self.last_time = time.time()  # Store last timestamp for derivative calculation
 
-#     def steer(self, px, car_position):
-#         current_time = time.time()
-#         dt = current_time - self.last_time  # Time difference for derivative term
+    def steer(self, px, car_position):
+        current_time = time.time()
+        dt = current_time - self.last_time  # Time difference for derivative term
 
-#         if dt == 0:  # Prevent division by zero
-#             dt = 0.001
+        if dt == 0:  # Prevent division by zero
+            dt = 0.001
 
-#         if abs(car_position) > self.threshold:
-#             proportional = self.k_p * car_position  # P term
-#             self.error += car_position * dt  # Accumulate integral error
-#             integral = self.k_i * self.error  # I term
-#             derivative = self.k_d * ((car_position - self.prev_error) / dt)  # D term
+        if abs(car_position) > self.threshold:
+            proportional = self.k_p * car_position  # P term
+            self.error += car_position * dt  # Accumulate integral error
+            integral = self.k_i * self.error  # I term
+            derivative = self.k_d * ((car_position - self.prev_error) / dt)  # D term
 
-#             self.angle = proportional + integral + derivative  # Compute total steering angle
+            self.angle = proportional + integral + derivative  # Compute total steering angle
 
-#             logging.debug(f'P: {proportional}, I: {integral}, D: {derivative}, Angle: {self.angle}')
+            logging.debug(f'P: {proportional}, I: {integral}, D: {derivative}, Angle: {self.angle}')
 
-#             px.set_dir_servo_angle(self.angle)  # Apply steering correction
+            px.set_dir_servo_angle(self.angle)  # Apply steering correction
 
-#             self.prev_error = car_position  # Store error for next derivative calculation
-#             self.last_time = current_time  # Update last time
+            self.prev_error = car_position  # Store error for next derivative calculation
+            self.last_time = current_time  # Update last time
 
-#             return self.angle
+            return self.angle
 
-#         self.angle = 0
-#         logging.debug(f'Steering Angle: {self.angle}')
-#         px.set_dir_servo_angle(self.angle)  # Keep wheels straight if error is small
-#         return self.angle
+        self.angle = 0
+        logging.debug(f'Steering Angle: {self.angle}')
+        px.set_dir_servo_angle(self.angle)  # Keep wheels straight if error is small
+        return self.angle
     
 
 

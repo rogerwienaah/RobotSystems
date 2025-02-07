@@ -20,6 +20,8 @@ class Sense():
         self.sense_interpret_bus = sense_interpret_bus
         self.sense_delay = sense_delay
         self.reference = np.array(self.px.grayscale._reference)
+
+        
         if camera:
             Vilib.camera_start()
             time.sleep(0.5)
