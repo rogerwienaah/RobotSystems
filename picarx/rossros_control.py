@@ -3,7 +3,6 @@ from vilib import Vilib
 import time
 import logging
 import cv2
-from readerwriterlock import rwlock
 
 import rossros as rr
 
@@ -60,7 +59,7 @@ class Interpret():
         self.robot_location = 0
         self.thresh = 75
         self.colour = 255
-        self.lock = rwlock.RWLockWrite()
+
     
 
     def grayscale_line_status(self, val_list):

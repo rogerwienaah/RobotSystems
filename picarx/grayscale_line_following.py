@@ -1,4 +1,4 @@
-from picarx_improved import Picarx
+from picarx_new import Picarx
 from time import sleep
 
 class Sensor():
