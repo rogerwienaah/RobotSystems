@@ -1,4 +1,4 @@
-from picarx_improved import Picarx
+from picarx_new import Picarx
 try:
     from vilib import Vilib
 except:
