@@ -206,7 +206,7 @@ if __name__ == "__main__":
     determine_stop = ros.ConsumerProducer(
         control.ultrasonic_stop,
         ultrasonic_bus,
-        terminate_bus,
+        # terminate_bus,
         think_delay,
         terminate_bus,
         "Calculate position"
