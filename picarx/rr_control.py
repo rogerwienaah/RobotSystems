@@ -7,7 +7,7 @@ import time
 import logging
 import numpy as np
 import cv2
-import rossros as ros
+import _rossros as ros
 
 
 logging_format = "%(asctime)s: %(message)s"
