@@ -7,7 +7,7 @@ import time
 import logging
 import numpy as np
 import cv2
-import _rossros as ros
+import rossros as ros
 
 
 logging_format = "%(asctime)s: %(message)s"
@@ -239,7 +239,7 @@ if __name__ == "__main__":
     producer_consumer_list = [read_grayscale,
                               determine_position,
                               move_wheels,
-                              print_buses,
+                            #   print_buses,
                               terminate_timer,
                               determine_stop,
                               read_ultrasonic
