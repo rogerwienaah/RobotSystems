@@ -12,7 +12,7 @@ import rossros as ros
 
 logging_format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=logging_format, level = logging.INFO, datefmt="%H:%M:%S")
-logging.getLogger().setLevel(logging.DEBUG)
+# logging.getLogger().setLevel(logging.DEBUG)
 
 class Sense():
     def __init__(self, px, camera = False):
@@ -240,9 +240,9 @@ if __name__ == "__main__":
                               determine_position,
                               move_wheels,
                                 print_buses,
-                              terminate_timer,
                               determine_stop,
-                              read_ultrasonic
+                              read_ultrasonic, 
+                              terminate_timer,
                               ]
     
     ros.runConcurrently(producer_consumer_list)
