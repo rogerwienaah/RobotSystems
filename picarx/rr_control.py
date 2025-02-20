@@ -147,8 +147,9 @@ class Control():
         
         def ultrasonic_stop(self, car_distance):
             if car_distance < self.stop_distance:
-                return 1
-            return 0
+                px.stop()
+            else:
+                px.forward(30)
 
 if __name__ == "__main__":
     method = 0
@@ -240,9 +241,9 @@ if __name__ == "__main__":
                               determine_position,
                               move_wheels,
                                 print_buses,
+                                terminate_timer,
                               determine_stop,
-                              read_ultrasonic, 
-                              terminate_timer,
+                              read_ultrasonic 
                               ]
     
     ros.runConcurrently(producer_consumer_list)
