@@ -208,7 +208,7 @@ if __name__ == "__main__":
         ultrasonic_bus,
         terminate_bus,
         think_delay,
-        # terminate_bus,
+        terminate_bus,
         "Calculate position"
     )
 
