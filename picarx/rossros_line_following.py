@@ -188,7 +188,7 @@ def main():
             car.stop()
         else:
             logger.debug("Ultrasonic Controller: Moving car forward.")
-            car.forward(30)
+            car.forward(80)
         return safe_flag  # Dummy return
 
     # --------------------------
