@@ -240,7 +240,7 @@ if __name__ == "__main__":
     producer_consumer_list = [read_grayscale,
                               determine_position,
                               move_wheels,
-                                print_buses,
+                                #print_buses,
                                 terminate_timer,
                               determine_stop,
                               read_ultrasonic 
