@@ -155,8 +155,10 @@ class Control():
 
         def ultrasonic_stop(self, picar_distance):
             if picar_distance < self.stop_distance:
-                return 1
-            return 0
+                px.forward(0)
+            
+            else:
+                px.forward(60)
         
 
         # PID control to adjust the steering of the picar
