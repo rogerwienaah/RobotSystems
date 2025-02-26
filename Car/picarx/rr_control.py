@@ -147,9 +147,9 @@ class Control():
         
         def ultrasonic_stop(self, car_distance):
             if car_distance < self.stop_distance:
-                return 1
+                px.forward(0)
             else:
-                return 0
+                px.forward(60)
 
 if __name__ == "__main__":
     method = 0
