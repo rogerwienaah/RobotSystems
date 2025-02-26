@@ -158,7 +158,7 @@ class Control():
                 px.forward(0)
             
             else:
-                px.forward(60)
+                self.steer_with_grayscale()
         
 
         # PID control to adjust the steering of the picar
