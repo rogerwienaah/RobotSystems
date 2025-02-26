@@ -147,9 +147,9 @@ class Control():
         
         def ultrasonic_stop(self, car_distance):
             if car_distance < self.stop_distance:
-                px.forward(30)
+                return 1
             else:
-                px.stop()
+                return 0
 
 if __name__ == "__main__":
     method = 0
@@ -207,7 +207,7 @@ if __name__ == "__main__":
     determine_stop = ros.ConsumerProducer(
         control.ultrasonic_stop,
         ultrasonic_bus,
-        # terminate_bus,
+        terminate_bus,
         think_delay,
         terminate_bus,
         "Calculate position"
