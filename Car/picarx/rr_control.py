@@ -149,7 +149,7 @@ class Control():
             if car_distance < self.stop_distance:
                 px.forward(0)
             else:
-                px.forward(60)
+                px.forward(40)
 
 if __name__ == "__main__":
     method = 0
