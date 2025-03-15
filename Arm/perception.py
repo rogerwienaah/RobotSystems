@@ -42,7 +42,7 @@ class Perception():
         self.size = (640, 480)
         self.roi = ()
         self.image_center_distance = 20
-        self.square_length = 3
+        self.square_length = 1.6
 
         # Camera instance
         self.camera = Camera()
@@ -102,14 +102,14 @@ class Perception():
             # Mask the image
             frame_mask = cv2.inRange(frame_lab, self.color_range[i][0], self.color_range[i][1])
             # Opening and closing operations to remove noise
-            opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))
-            closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))
+            opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((4, 4), np.uint8))
+            closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((4, 4), np.uint8))
             # Find contours
             contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]
             # Find the contour with the largest area
             areaMaxContour, area_max = self.getAreaMaxContour(contours)
 
-            if area_max > 2500:
+            if area_max > 711:
                 rect = cv2.minAreaRect(areaMaxContour)
                 box = np.int0(cv2.boxPoints(rect))
 

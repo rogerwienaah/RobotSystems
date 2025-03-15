@@ -16,9 +16,13 @@ class Perception():
                                   'green': (0, 255, 0),
                                   'black': (0, 0, 0),
                                   'white': (255, 255, 255)}
+        
+
+
         self.target_color = ('red', 'green', 'blue')
         self.camera = Camera.Camera()
         self.camera.camera_open()
+
         self.img_size = (640, 480)
         self.blur_kernal = (11, 11)
         self.filter_kernal = (6, 6)
@@ -27,11 +31,13 @@ class Perception():
         self.best_contour = None
         self.best_contour_area = 0
         self.color_of_interest = None
-        self.minimum_contour_thresh = 2500
+
+        self.minimum_contour_thresh = 711
         self.last_x = 0
         self.last_y = 0
         self.color_to_number = {"red" : 1, "green" : 2, "blue" : 3}
         self.number_to_color = {1 : "red", 2 : "green", 3 : "blue"}
+
         self.seen_colours = []
         self.center_locations = []
         self.movement_change_thresh = 0.5
@@ -41,6 +47,8 @@ class Perception():
         self.draw_colour = self.possible_colour_values['black']
         self.rotation_angle = 0
         self.color_range = color_range
+        self.square_length = 1.6
+
 
     def find_objects(self):
         while True:
@@ -79,7 +87,7 @@ class Perception():
             box = np.int0(cv2.boxPoints(rect))
 
             self.roi = getROI(box)
-            img_x, img_y = getCenter(rect, self.roi, self.img_size, square_length)
+            img_x, img_y = getCenter(rect, self.roi, self.img_size, self.square_length)
             world_x, world_y = convertCoordinate(img_x, img_y, self.img_size)
 
             cv2.drawContours(img, [box], -1, self.possible_colour_values[self.color_of_interest], 2)
