@@ -87,7 +87,8 @@ class Perception():
             box = np.int0(cv2.boxPoints(rect))
 
             self.roi = getROI(box)
-            img_x, img_y = getCenter(rect, self.roi, self.img_size, self.square_length)
+            # img_x, img_y = getCenter(rect, self.roi, self.img_size, self.square_length)
+            img_x, img_y = rect[0]
             world_x, world_y = convertCoordinate(img_x, img_y, self.img_size)
 
             cv2.drawContours(img, [box], -1, self.possible_colour_values[self.color_of_interest], 2)

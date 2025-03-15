@@ -21,13 +21,13 @@ class Motion():
         self.currently_moving = False
         self.sleep_divider = 1000
         self.sleep_time = 0.5
-        self.gripper_closed = 500
+        self.gripper_closed = 400
         self.gripper_open = 280
         self.servo_1_id = 1
         self.servo_2_id = 2
         self.arm_kinematics = ArmIK()
-        self.desired_approach_height_grasp = 7
-        self.desired_final_height_grasp = 1.0
+        self.desired_approach_height_grasp = 4
+        self.desired_final_height_grasp = 0.5
     
     def set_led_colour(self, colour):
         if colour == "red":
