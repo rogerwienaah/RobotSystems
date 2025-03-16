@@ -10,7 +10,7 @@ from ArmIK.Transform import *
 from ArmIK.ArmMoveIK import *
 import HiwonderSDK.Board as Board
 from CameraCalibration.CalibrationConfig import *
-from r_perception import Perception
+from dice_bot_perception import Perception
 
 class Motion():
     def __init__(self, perception):
@@ -59,12 +59,13 @@ class Motion():
     
     def move_arm(self):
         while True:
+            # check for color and half plane of fov
             if self.perception.current_colour != "None" and self.perception.last_x < self.perception.img_size[0] // 2:
                 current_colour = self.perception.current_colour
                 self.set_led_colour(current_colour)
                 
                 #get coordinates and rotation of the object
-                desired_x, desired_y, desired_angle = -self.perception.last_x, self.perception.last_y+2, self.perception.rotation_angle
+                desired_x, desired_y, desired_angle = self.perception.last_x+2, self.perception.last_y, self.perception.rotation_angle
                 print(desired_x, desired_y)
                 
                 #move arm to above object
@@ -109,8 +110,8 @@ class Motion():
                     self.arm_kinematics.setPitchRangeMoving((self.tower_coordinates[0], self.tower_coordinates[1], self.tower_coordinates[2] + 5), -90, -90, 0, 500)
                     time.sleep(self.sleep_time)
                                         
-                    self.arm_kinematics.setPitchRangeMoving((self.tower_coordinates), -90, -90, 0, 1000)
-                    time.sleep(self.sleep_time)
+                    #self.arm_kinematics.setPitchRangeMoving((self.tower_coordinates), -90, -90, 0, 1000)
+                    #time.sleep(self.sleep_time)
 
                     Board.setBusServoPulse(self.servo_1_id, self.gripper_closed - self.gripper_open, self.gripper_closed)
                     time.sleep(self.sleep_time)

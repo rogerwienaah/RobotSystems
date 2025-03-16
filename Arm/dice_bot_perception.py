@@ -92,7 +92,7 @@ class Perception():
             # img_x, img_y = rect[0]
             
             # focus on only the storage area - half of fov
-            if img_x < self.img_size[0] // 2:
+            if img_x > self.img_size[0] // 2:
                 world_x, world_y = convertCoordinate(img_x, img_y, self.img_size)
 
                 cv2.drawContours(img, [box], -1, self.possible_colour_values[self.color_of_interest], 2)
