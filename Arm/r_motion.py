@@ -14,20 +14,24 @@ from r_perception import Perception
 
 class Motion():
     def __init__(self, perception):
-        self.colour_coordinates = {'red' : (-15 + 0.5, 12 - 0.5, 1.5),
-        'green' : (-15 + 0.5, 6 - 0.5,  1.5),
-        'blue' : (-15 + 0.5, 0 - 0.5,  1.5)}
+        
+        #coordinates for placing objects
+        self.tower_coordinates = (-15 + 0.5, 15-0.5, 20)
+        
+        #safe zone
+        self.safe_zone = (15, 10, 20)
+        
         self.perception = perception
         self.currently_moving = False
         self.sleep_divider = 1000
         self.sleep_time = 0.5
-        self.gripper_closed = 400
-        self.gripper_open = 280
+        self.gripper_closed = 600
+        self.gripper_open = 150
         self.servo_1_id = 1
         self.servo_2_id = 2
         self.arm_kinematics = ArmIK()
-        self.desired_approach_height_grasp = 4
-        self.desired_final_height_grasp = 0.5
+        self.desired_approach_height_grasp = 5
+        self.desired_final_height_grasp = 2  # grasp based on the thickness of the board
     
     def set_led_colour(self, colour):
         if colour == "red":
@@ -55,48 +59,63 @@ class Motion():
     
     def move_arm(self):
         while True:
-            if self.perception.current_colour != "None":
+            if self.perception.current_colour != "None" and self.perception.last_x < self.perception.img_size[0] // 2:
                 current_colour = self.perception.current_colour
                 self.set_led_colour(current_colour)
-
-                desired_x, desired_y, desired_angle = self.perception.last_x, self.perception.last_y, self.perception.rotation_angle
+                
+                #get coordinates and rotation of the object
+                desired_x, desired_y, desired_angle = -self.perception.last_x, self.perception.last_y+2, self.perception.rotation_angle
+                print(desired_x, desired_y)
+                
+                #move arm to above object
                 result = self.arm_kinematics.setPitchRangeMoving((desired_x, desired_y, self.desired_approach_height_grasp), -90, -90, 0)  
 
                 if result:
                     time.sleep(result[2]/self.sleep_divider)
-
+                    
+                    # rotate gripper to match object orientation
                     block_rotation = getAngle(desired_x, desired_y, desired_angle)
                     Board.setBusServoPulse(self.servo_1_id, self.gripper_closed - self.gripper_open, self.gripper_closed)
                     Board.setBusServoPulse(self.servo_2_id, block_rotation, self.gripper_closed)
                     time.sleep(self.sleep_time)
-
+                    
+                    # lower gripper for final grasp
                     self.arm_kinematics.setPitchRangeMoving((desired_x, desired_y, self.desired_final_height_grasp), -90, -90, 0, 1000)
                     time.sleep(self.sleep_time)
-
+                    
+                    #close gripper for final grab of object
                     Board.setBusServoPulse(self.servo_1_id, self.gripper_closed, self.gripper_closed)
                     time.sleep(self.sleep_time)
 
                     Board.setBusServoPulse(self.servo_2_id, self.gripper_closed, self.gripper_closed)
+                    
+                    # lift object
                     self.arm_kinematics.setPitchRangeMoving((desired_x, desired_y, self.desired_approach_height_grasp), -90, -90, 0, 1000)
                     time.sleep(2*self.sleep_time)
-
-                    result = self.arm_kinematics.setPitchRangeMoving((self.colour_coordinates[current_colour][0], self.colour_coordinates[current_colour][1], 12), -90, -90, 0)   
+                    
+                    # move to safe zone
+                    result = self.arm_kinematics.setPitchRangeMoving((self.safe_zone[0], self.safe_zone[1], self.safe_zone[2] + 5), -90, -90, 0)   
+                    time.sleep(2)
+                    
+                    
+                    #move arm to drop position - tower location
+                    result = self.arm_kinematics.setPitchRangeMoving((self.tower_coordinates[0], self.tower_coordinates[1], self.tower_coordinates[2] + 5), -90, -90, 0)   
                     time.sleep(result[2]/self.sleep_divider)
                                     
-                    block_rotation = getAngle(self.colour_coordinates[current_colour][0], self.colour_coordinates[current_colour][1], -90)
+                    block_rotation = getAngle(self.tower_coordinates[0], self.tower_coordinates[1], -90)
                     Board.setBusServoPulse(self.servo_2_id, block_rotation, self.gripper_closed)
                     time.sleep(self.sleep_time)
 
-                    self.arm_kinematics.setPitchRangeMoving((self.colour_coordinates[current_colour][0], self.colour_coordinates[current_colour][1], self.colour_coordinates[current_colour][2] + 3), -90, -90, 0, 500)
+                    self.arm_kinematics.setPitchRangeMoving((self.tower_coordinates[0], self.tower_coordinates[1], self.tower_coordinates[2] + 5), -90, -90, 0, 500)
                     time.sleep(self.sleep_time)
                                         
-                    self.arm_kinematics.setPitchRangeMoving((self.colour_coordinates[current_colour]), -90, -90, 0, 1000)
+                    self.arm_kinematics.setPitchRangeMoving((self.tower_coordinates), -90, -90, 0, 1000)
                     time.sleep(self.sleep_time)
 
-                    Board.setBusServoPulse(1, self.gripper_closed - self.gripper_open, self.gripper_closed)
+                    Board.setBusServoPulse(self.servo_1_id, self.gripper_closed - self.gripper_open, self.gripper_closed)
                     time.sleep(self.sleep_time)
 
-                    self.arm_kinematics.setPitchRangeMoving((self.colour_coordinates[current_colour][0], self.colour_coordinates[current_colour][1], 12), -90, -90, 0, 800)
+                    self.arm_kinematics.setPitchRangeMoving((self.tower_coordinates[0], self.tower_coordinates[1], self.tower_coordinates[2] + 5), -90, -90, 0, 800)
                     time.sleep(self.sleep_time)
 
                     self.move_home()

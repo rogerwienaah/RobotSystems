@@ -11,6 +11,7 @@ from CameraCalibration.CalibrationConfig import *
 
 class Perception():
     def __init__(self):
+        
         self.possible_colour_values = {'red': (0, 0, 255),
                                   'blue': (255, 0, 0),
                                   'green': (0, 255, 0),
@@ -47,7 +48,7 @@ class Perception():
         self.draw_colour = self.possible_colour_values['black']
         self.rotation_angle = 0
         self.color_range = color_range
-        self.square_length = 1.6
+        # self.square_length = 1.6
 
 
     def find_objects(self):
@@ -87,43 +88,46 @@ class Perception():
             box = np.int0(cv2.boxPoints(rect))
 
             self.roi = getROI(box)
-            # img_x, img_y = getCenter(rect, self.roi, self.img_size, self.square_length)
-            img_x, img_y = rect[0]
-            world_x, world_y = convertCoordinate(img_x, img_y, self.img_size)
-
-            cv2.drawContours(img, [box], -1, self.possible_colour_values[self.color_of_interest], 2)
-            cv2.putText(img, f'({world_x}, {world_y})', (min(box[0, 0], box[2, 0]), box[2, 1] - 10), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, 
-                        self.possible_colour_values[self.color_of_interest], 1) 
-
-            distance = math.sqrt((world_x - self.last_x)**2 + (world_y - self.last_y)**2)
-            self.last_x, self.last_y = world_x, world_y
-
-            if self.color_of_interest in self.color_to_number:
-                color_location = self.color_to_number[self.color_of_interest]
-            else:
-                color_location = 0
+            img_x, img_y = getCenter(rect, self.roi, self.img_size, square_length)
+            # img_x, img_y = rect[0]
             
-            self.seen_colours.append(color_location)
+            # focus on only the storage area - half of fov
+            if img_x < self.img_size[0] // 2:
+                world_x, world_y = convertCoordinate(img_x, img_y, self.img_size)
 
-            if distance < self.movement_change_thresh:
-                self.center_locations.extend((world_x, world_y))
-                self.check_timing(rect)
-            else:
-                self.previous_time = time.time()
-                self.center_locations = []
-            
-            if len(self.seen_colours) == 3:
-                current_number = int(round(np.mean(np.array(self.seen_colours))))
-                if current_number in self.number_to_color:
-                    self.current_colour = self.number_to_color[current_number]
-                    self.draw_colour = self.possible_colour_values[self.current_colour]
+                cv2.drawContours(img, [box], -1, self.possible_colour_values[self.color_of_interest], 2)
+                cv2.putText(img, f'({world_x}, {world_y})', (min(box[0, 0], box[2, 0]), box[2, 1] - 10), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, 
+                            self.possible_colour_values[self.color_of_interest], 1) 
+
+                distance = math.sqrt((world_x - self.last_x)**2 + (world_y - self.last_y)**2)
+                self.last_x, self.last_y = world_x, world_y
+
+                if self.color_of_interest in self.color_to_number:
+                    color_location = self.color_to_number[self.color_of_interest]
                 else:
-                    self.current_colour = 'None'
-                    self.draw_colour = self.possible_colour_values['black']
-                    
+                    color_location = 0
                 
-                self.seen_colours = []
+                self.seen_colours.append(color_location)
+
+                if distance < self.movement_change_thresh:
+                    self.center_locations.extend((world_x, world_y))
+                    self.check_timing(rect)
+                else:
+                    self.previous_time = time.time()
+                    self.center_locations = []
+            
+                if len(self.seen_colours) == 3:
+                    current_number = int(round(np.mean(np.array(self.seen_colours))))
+                    if current_number in self.number_to_color:
+                        self.current_colour = self.number_to_color[current_number]
+                        self.draw_colour = self.possible_colour_values[self.current_colour]
+                    else:
+                        self.current_colour = 'None'
+                        self.draw_colour = self.possible_colour_values['black']
+                        
+                    
+                    self.seen_colours = []
             
         else:
             self.draw_colour = (0, 0, 0)
