@@ -59,7 +59,7 @@ class Motion():
     
     def move_arm(self):
         while True:
-            # check for color and half plane of fov
+            # check for color and right - half plane of fov
             if self.perception.current_colour != "None" and self.perception.last_x < self.perception.img_size[0] // 2:
                 current_colour = self.perception.current_colour
                 self.set_led_colour(current_colour)
