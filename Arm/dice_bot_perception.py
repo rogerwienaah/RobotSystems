@@ -13,14 +13,12 @@ class Perception():
     def __init__(self):
         
         self.possible_colour_values = {'red': (0, 0, 255),
-                                  'blue': (255, 0, 0),
-                                  'green': (0, 255, 0),
                                   'black': (0, 0, 0),
                                   'white': (255, 255, 255)}
         
 
 
-        self.target_color = ('red', 'green', 'blue')
+        self.target_color = ('red')
         self.camera = Camera.Camera()
         self.camera.camera_open()
 
@@ -36,8 +34,8 @@ class Perception():
         self.minimum_contour_thresh = 711
         self.last_x = 0
         self.last_y = 0
-        self.color_to_number = {"red" : 1, "green" : 2, "blue" : 3}
-        self.number_to_color = {1 : "red", 2 : "green", 3 : "blue"}
+        self.color_to_number = {"red" : 1}
+        self.number_to_color = {1 : "red"}
 
         self.seen_colours = []
         self.center_locations = []
@@ -128,10 +126,13 @@ class Perception():
                         
                     
                     self.seen_colours = []
+            #else:
+                #print("No dice in storage area")
             
         else:
             self.draw_colour = (0, 0, 0)
             self.current_colour = "None"
+            print("No dice in storage area")
 
         cv2.putText(img, f'Colour: {self.current_colour}', (10, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.65, self.draw_colour, 2)
         return img
