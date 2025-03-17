@@ -48,7 +48,7 @@ class Perception():
         self.draw_colour = self.possible_colour_values['black']
         self.rotation_angle = 0
         self.color_range = color_range
-        self.items_in_storage_area = False
+        # self.square_length = 1.6
 
 
     def find_objects(self):
@@ -93,8 +93,6 @@ class Perception():
             
             # focus on only the storage area - half of fov
             if img_x > self.img_size[0] // 2:
-                self.items_in_storage_area = True
-                print("Item in storage area")
                 world_x, world_y = convertCoordinate(img_x, img_y, self.img_size)
 
                 cv2.drawContours(img, [box], -1, self.possible_colour_values[self.color_of_interest], 2)
@@ -130,9 +128,6 @@ class Perception():
                         
                     
                     self.seen_colours = []
-            else:    
-                self.items_in_storage_area = False
-                print("Item not in storage area")
             
         else:
             self.draw_colour = (0, 0, 0)
