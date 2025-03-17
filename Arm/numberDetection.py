@@ -17,8 +17,8 @@ import pytesseract
 
 class textReader():
     def __init__(self):
-        # pytesseract.pytesseract.tesseract_cmd = ~/ArmPi/Functions/venv/bin/tesseract #
-        pass
+        pytesseract.pytesseract.tesseract_cmd = "~/ArmPi/Functions/venv/bin/pytesseract"
+        
     def processing(frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Convert image to grayscale
         _, thresh1 = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU | cv2.THRESH_BINARY_INV) # Apply OTSU Thresholding (Bimodal)
@@ -34,5 +34,14 @@ class textReader():
             print(text)
 
 if __name__ == "__main__":
-    pass
+    textreader = textReader()
+    
+    camera = Camera.Camera()
+    camera.camera_open()
+    while True:
+        frame = camera.frame
+        if frame is not None:
+            cv2.imshow('frame', frame)
+            textreader.processing(frame)
+            cv2.waitKey(1)
 
